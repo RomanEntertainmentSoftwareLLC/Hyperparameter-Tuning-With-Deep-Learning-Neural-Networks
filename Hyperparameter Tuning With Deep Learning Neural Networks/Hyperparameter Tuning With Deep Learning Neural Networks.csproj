@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5F53A5C3-9E56-479E-868B-2A3CE54922D6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks</RootNamespace>
+    <AssemblyName>Hyperparameter Tuning With Deep Learning Neural Networks</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.XAudio2, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.XAudio2.4.2.0\lib\net45\SharpDX.XAudio2.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Exit Button 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Exit Button 3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Exit Button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Minimize Button 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Minimize Button 3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Minimize Button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Results Button 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Results Button 3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Results Button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Sound Button 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Sound Button 3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Sound Button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Sound Disabled Button 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Sound Disabled Button 3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Sound Disabled Button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\sounds\beep.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\sounds\nanoblade.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Clear Button 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Clear Button 3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Clear Button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Train Button 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Train Button 3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\graphics\Train Button.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
