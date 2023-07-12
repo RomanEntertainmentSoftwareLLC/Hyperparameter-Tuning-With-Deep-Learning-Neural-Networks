@@ -72,7 +72,8 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
 
             inputInformation[3] = "Epochs: Also known as intervals, an epoch refers to a single pass of the entire training dataset through the network. During training, " +
                                   "the dataset is typically divided into smaller batches, and each batch is sequentially presented to the network for forward propagation " +
-                                  "(computing the output) and backward propagation (updating the weights based on the computed errors).";
+                                  "(computing the output) and backward propagation (updating the weights based on the computed errors). It is recommended to train your model " +
+                                  "for at least 25 epochs.";
 
             inputInformation[4] = "Hidden Layers: An intermediate layer between the input layer and the output layer. It consists of " +
                                   "multiple artificial neurons, also known as activation units or nodes, which perform computations on the input data. The number of hidden " +
@@ -80,8 +81,10 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                                   "of the data. Deeper networks with more hidden layers can potentially learn more intricate representations but may require more computational " +
                                   "resources and careful training.";
             
-            inputInformation[5] = "Batch Size: The batch size in a convolutional neural network (CNN) refers to the number of training examples processed together in a single " +
-                                  "forward and backward pass during training.";
+            inputInformation[5] = "Priority: This selection will determine whether you'd like to prioritize time or accuracy; prioritizing time will speed up the training process " +
+                                  "and select a batch size determined to provide about 97% accuracy for the amount of epochs you have specified. Prioritizing accuracy will instead " +
+                                  "default the batch size to the commonly used default of 32. At higher epoch counts, this choice will considerably slow down training, but " +
+                                  "increase the test accuracy of the model by the end of training. Note that epoch counts below 25 will likely be both slow and inaccurate for either choice.";
 
             inputInformation[6] = "Activation Function: Determines the output of a neuron or a node, introducing non-linearity to enable the network to learn complex patterns " +
                                   "and make predictions.";
@@ -93,7 +96,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
             txtWeightedDistribution.Text = "10";
             txtEpochs.Text = "1000";
             txtHiddenLayers.Text = "4";
-            cmbBatchSize.SelectedIndex = 0;
+            cmbPriority.SelectedIndex = 0;
             cmbActivationFunction.SelectedIndex = 0;
             lblInputInformation.Text = inputInformation[0];
         }

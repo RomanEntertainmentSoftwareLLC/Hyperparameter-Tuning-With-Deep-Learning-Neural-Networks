@@ -45,13 +45,13 @@
             this.picClear = new System.Windows.Forms.PictureBox();
             this.lblInputInformation = new System.Windows.Forms.Label();
             this.cmbActivationFunction = new System.Windows.Forms.ComboBox();
-            this.cmbBatchSize = new System.Windows.Forms.ComboBox();
+            this.cmbPriority = new System.Windows.Forms.ComboBox();
             this.txtHiddenLayers = new System.Windows.Forms.TextBox();
             this.txtEpochs = new System.Windows.Forms.TextBox();
             this.txtWeightedDistribution = new System.Windows.Forms.TextBox();
             this.cmbXavierInitialization = new System.Windows.Forms.ComboBox();
             this.lblActivationFunction = new System.Windows.Forms.Label();
-            this.lblBatchSize = new System.Windows.Forms.Label();
+            this.lblPriority = new System.Windows.Forms.Label();
             this.lblXavierInitialization = new System.Windows.Forms.Label();
             this.lblHiddenLayers = new System.Windows.Forms.Label();
             this.lblEpochs = new System.Windows.Forms.Label();
@@ -128,12 +128,12 @@
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(164)))), ((int)(((byte)(164)))));
             this.lblTitle.Location = new System.Drawing.Point(385, 33);
             this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(620, 28);
+            this.lblTitle.Size = new System.Drawing.Size(598, 25);
             this.lblTitle.TabIndex = 84;
             this.lblTitle.Text = "Hyperparameter Tuning With Deep Learning Neural Networks";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -153,12 +153,12 @@
             // lblOutputLarge
             // 
             this.lblOutputLarge.AutoSize = true;
-            this.lblOutputLarge.Font = new System.Drawing.Font("Open Sans", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOutputLarge.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblOutputLarge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(164)))), ((int)(((byte)(164)))));
             this.lblOutputLarge.Location = new System.Drawing.Point(15, 122);
             this.lblOutputLarge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOutputLarge.Name = "lblOutputLarge";
-            this.lblOutputLarge.Size = new System.Drawing.Size(126, 43);
+            this.lblOutputLarge.Size = new System.Drawing.Size(114, 37);
             this.lblOutputLarge.TabIndex = 89;
             this.lblOutputLarge.Text = "Output";
             this.lblOutputLarge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -170,12 +170,12 @@
             // lblInputLarge
             // 
             this.lblInputLarge.AutoSize = true;
-            this.lblInputLarge.Font = new System.Drawing.Font("Open Sans", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblInputLarge.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblInputLarge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(164)))), ((int)(((byte)(164)))));
             this.lblInputLarge.Location = new System.Drawing.Point(29, 82);
             this.lblInputLarge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblInputLarge.Name = "lblInputLarge";
-            this.lblInputLarge.Size = new System.Drawing.Size(99, 43);
+            this.lblInputLarge.Size = new System.Drawing.Size(88, 37);
             this.lblInputLarge.TabIndex = 88;
             this.lblInputLarge.Text = "Input";
             this.lblInputLarge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -187,12 +187,12 @@
             // lblOutput
             // 
             this.lblOutput.AutoSize = true;
-            this.lblOutput.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblOutput.ForeColor = System.Drawing.Color.White;
             this.lblOutput.Location = new System.Drawing.Point(38, 130);
             this.lblOutput.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOutput.Name = "lblOutput";
-            this.lblOutput.Size = new System.Drawing.Size(81, 28);
+            this.lblOutput.Size = new System.Drawing.Size(76, 25);
             this.lblOutput.TabIndex = 87;
             this.lblOutput.Text = "Output";
             this.lblOutput.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -201,12 +201,12 @@
             // lblInput
             // 
             this.lblInput.AutoSize = true;
-            this.lblInput.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblInput.ForeColor = System.Drawing.Color.White;
             this.lblInput.Location = new System.Drawing.Point(47, 90);
             this.lblInput.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblInput.Name = "lblInput";
-            this.lblInput.Size = new System.Drawing.Size(64, 28);
+            this.lblInput.Size = new System.Drawing.Size(59, 25);
             this.lblInput.TabIndex = 86;
             this.lblInput.Text = "Input";
             this.lblInput.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -218,13 +218,13 @@
             this.pnlInput.Controls.Add(this.picClear);
             this.pnlInput.Controls.Add(this.lblInputInformation);
             this.pnlInput.Controls.Add(this.cmbActivationFunction);
-            this.pnlInput.Controls.Add(this.cmbBatchSize);
+            this.pnlInput.Controls.Add(this.cmbPriority);
             this.pnlInput.Controls.Add(this.txtHiddenLayers);
             this.pnlInput.Controls.Add(this.txtEpochs);
             this.pnlInput.Controls.Add(this.txtWeightedDistribution);
             this.pnlInput.Controls.Add(this.cmbXavierInitialization);
             this.pnlInput.Controls.Add(this.lblActivationFunction);
-            this.pnlInput.Controls.Add(this.lblBatchSize);
+            this.pnlInput.Controls.Add(this.lblPriority);
             this.pnlInput.Controls.Add(this.lblXavierInitialization);
             this.pnlInput.Controls.Add(this.lblHiddenLayers);
             this.pnlInput.Controls.Add(this.lblEpochs);
@@ -266,7 +266,7 @@
             // 
             // lblInputInformation
             // 
-            this.lblInputInformation.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblInputInformation.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblInputInformation.ForeColor = System.Drawing.Color.White;
             this.lblInputInformation.Location = new System.Drawing.Point(33, 492);
             this.lblInputInformation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -278,7 +278,7 @@
             // 
             this.cmbActivationFunction.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.cmbActivationFunction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbActivationFunction.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbActivationFunction.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbActivationFunction.ForeColor = System.Drawing.Color.White;
             this.cmbActivationFunction.FormattingEnabled = true;
             this.cmbActivationFunction.Items.AddRange(new object[] {
@@ -287,39 +287,34 @@
             "Relu"});
             this.cmbActivationFunction.Location = new System.Drawing.Point(436, 297);
             this.cmbActivationFunction.Name = "cmbActivationFunction";
-            this.cmbActivationFunction.Size = new System.Drawing.Size(260, 36);
+            this.cmbActivationFunction.Size = new System.Drawing.Size(260, 33);
             this.cmbActivationFunction.TabIndex = 99;
             this.cmbActivationFunction.Enter += new System.EventHandler(this.cmbActivationFunction_Enter);
             // 
-            // cmbBatchSize
+            // cmbPriority
             // 
-            this.cmbBatchSize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
-            this.cmbBatchSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbBatchSize.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbBatchSize.ForeColor = System.Drawing.Color.White;
-            this.cmbBatchSize.FormattingEnabled = true;
-            this.cmbBatchSize.Items.AddRange(new object[] {
-            "8",
-            "16",
-            "32",
-            "64",
-            "128",
-            "256",
-            "512"});
-            this.cmbBatchSize.Location = new System.Drawing.Point(436, 257);
-            this.cmbBatchSize.Name = "cmbBatchSize";
-            this.cmbBatchSize.Size = new System.Drawing.Size(260, 36);
-            this.cmbBatchSize.TabIndex = 98;
-            this.cmbBatchSize.Enter += new System.EventHandler(this.cmbBatchSize_Enter);
+            this.cmbPriority.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.cmbPriority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPriority.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbPriority.ForeColor = System.Drawing.Color.White;
+            this.cmbPriority.FormattingEnabled = true;
+            this.cmbPriority.Items.AddRange(new object[] {
+            "Time",
+            "Accuracy"});
+            this.cmbPriority.Location = new System.Drawing.Point(436, 257);
+            this.cmbPriority.Name = "cmbPriority";
+            this.cmbPriority.Size = new System.Drawing.Size(260, 33);
+            this.cmbPriority.TabIndex = 98;
+            this.cmbPriority.Enter += new System.EventHandler(this.cmbBatchSize_Enter);
             // 
             // txtHiddenLayers
             // 
             this.txtHiddenLayers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
-            this.txtHiddenLayers.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtHiddenLayers.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHiddenLayers.ForeColor = System.Drawing.Color.White;
             this.txtHiddenLayers.Location = new System.Drawing.Point(436, 218);
             this.txtHiddenLayers.Name = "txtHiddenLayers";
-            this.txtHiddenLayers.Size = new System.Drawing.Size(260, 36);
+            this.txtHiddenLayers.Size = new System.Drawing.Size(260, 31);
             this.txtHiddenLayers.TabIndex = 97;
             this.txtHiddenLayers.Text = "4";
             this.txtHiddenLayers.TextChanged += new System.EventHandler(this.txtHiddenLayers_TextChanged);
@@ -329,11 +324,11 @@
             // txtEpochs
             // 
             this.txtEpochs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
-            this.txtEpochs.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEpochs.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtEpochs.ForeColor = System.Drawing.Color.White;
             this.txtEpochs.Location = new System.Drawing.Point(436, 176);
             this.txtEpochs.Name = "txtEpochs";
-            this.txtEpochs.Size = new System.Drawing.Size(260, 36);
+            this.txtEpochs.Size = new System.Drawing.Size(260, 31);
             this.txtEpochs.TabIndex = 96;
             this.txtEpochs.Text = "1000";
             this.txtEpochs.TextChanged += new System.EventHandler(this.txtEpochs_TextChanged);
@@ -343,11 +338,11 @@
             // txtWeightedDistribution
             // 
             this.txtWeightedDistribution.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
-            this.txtWeightedDistribution.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtWeightedDistribution.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtWeightedDistribution.ForeColor = System.Drawing.Color.White;
             this.txtWeightedDistribution.Location = new System.Drawing.Point(436, 134);
             this.txtWeightedDistribution.Name = "txtWeightedDistribution";
-            this.txtWeightedDistribution.Size = new System.Drawing.Size(260, 36);
+            this.txtWeightedDistribution.Size = new System.Drawing.Size(260, 31);
             this.txtWeightedDistribution.TabIndex = 95;
             this.txtWeightedDistribution.Text = "10";
             this.txtWeightedDistribution.TextChanged += new System.EventHandler(this.txtWeightedDistribution_TextChanged);
@@ -358,7 +353,7 @@
             // 
             this.cmbXavierInitialization.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.cmbXavierInitialization.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbXavierInitialization.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbXavierInitialization.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbXavierInitialization.ForeColor = System.Drawing.Color.White;
             this.cmbXavierInitialization.FormattingEnabled = true;
             this.cmbXavierInitialization.Items.AddRange(new object[] {
@@ -366,45 +361,45 @@
             "False"});
             this.cmbXavierInitialization.Location = new System.Drawing.Point(436, 92);
             this.cmbXavierInitialization.Name = "cmbXavierInitialization";
-            this.cmbXavierInitialization.Size = new System.Drawing.Size(260, 36);
+            this.cmbXavierInitialization.Size = new System.Drawing.Size(260, 33);
             this.cmbXavierInitialization.TabIndex = 94;
             this.cmbXavierInitialization.Enter += new System.EventHandler(this.cmbXavierInitialization_Enter);
             // 
             // lblActivationFunction
             // 
             this.lblActivationFunction.AutoSize = true;
-            this.lblActivationFunction.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblActivationFunction.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblActivationFunction.ForeColor = System.Drawing.Color.White;
             this.lblActivationFunction.Location = new System.Drawing.Point(218, 300);
             this.lblActivationFunction.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblActivationFunction.Name = "lblActivationFunction";
-            this.lblActivationFunction.Size = new System.Drawing.Size(198, 28);
+            this.lblActivationFunction.Size = new System.Drawing.Size(195, 25);
             this.lblActivationFunction.TabIndex = 93;
             this.lblActivationFunction.Text = "Activation Function";
             this.lblActivationFunction.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblBatchSize
+            // lblPriority
             // 
-            this.lblBatchSize.AutoSize = true;
-            this.lblBatchSize.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBatchSize.ForeColor = System.Drawing.Color.White;
-            this.lblBatchSize.Location = new System.Drawing.Point(304, 260);
-            this.lblBatchSize.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblBatchSize.Name = "lblBatchSize";
-            this.lblBatchSize.Size = new System.Drawing.Size(112, 28);
-            this.lblBatchSize.TabIndex = 92;
-            this.lblBatchSize.Text = "Batch Size";
-            this.lblBatchSize.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblPriority.AutoSize = true;
+            this.lblPriority.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPriority.ForeColor = System.Drawing.Color.White;
+            this.lblPriority.Location = new System.Drawing.Point(333, 260);
+            this.lblPriority.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblPriority.Name = "lblPriority";
+            this.lblPriority.Size = new System.Drawing.Size(79, 25);
+            this.lblPriority.TabIndex = 92;
+            this.lblPriority.Text = "Priority";
+            this.lblPriority.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblXavierInitialization
             // 
             this.lblXavierInitialization.AutoSize = true;
-            this.lblXavierInitialization.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblXavierInitialization.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblXavierInitialization.ForeColor = System.Drawing.Color.White;
             this.lblXavierInitialization.Location = new System.Drawing.Point(220, 100);
             this.lblXavierInitialization.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblXavierInitialization.Name = "lblXavierInitialization";
-            this.lblXavierInitialization.Size = new System.Drawing.Size(196, 28);
+            this.lblXavierInitialization.Size = new System.Drawing.Size(192, 25);
             this.lblXavierInitialization.TabIndex = 91;
             this.lblXavierInitialization.Text = "Xavier Initialization";
             this.lblXavierInitialization.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -412,12 +407,12 @@
             // lblHiddenLayers
             // 
             this.lblHiddenLayers.AutoSize = true;
-            this.lblHiddenLayers.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHiddenLayers.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblHiddenLayers.ForeColor = System.Drawing.Color.White;
             this.lblHiddenLayers.Location = new System.Drawing.Point(229, 220);
             this.lblHiddenLayers.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblHiddenLayers.Name = "lblHiddenLayers";
-            this.lblHiddenLayers.Size = new System.Drawing.Size(187, 28);
+            this.lblHiddenLayers.Size = new System.Drawing.Size(188, 25);
             this.lblHiddenLayers.TabIndex = 90;
             this.lblHiddenLayers.Text = "Hidden Layer Size";
             this.lblHiddenLayers.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -425,12 +420,12 @@
             // lblEpochs
             // 
             this.lblEpochs.AutoSize = true;
-            this.lblEpochs.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEpochs.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEpochs.ForeColor = System.Drawing.Color.White;
             this.lblEpochs.Location = new System.Drawing.Point(333, 180);
             this.lblEpochs.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblEpochs.Name = "lblEpochs";
-            this.lblEpochs.Size = new System.Drawing.Size(83, 28);
+            this.lblEpochs.Size = new System.Drawing.Size(84, 25);
             this.lblEpochs.TabIndex = 89;
             this.lblEpochs.Text = "Epochs";
             this.lblEpochs.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -438,12 +433,12 @@
             // lblInputTitle
             // 
             this.lblInputTitle.AutoSize = true;
-            this.lblInputTitle.Font = new System.Drawing.Font("Open Sans Semibold", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblInputTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblInputTitle.ForeColor = System.Drawing.Color.White;
             this.lblInputTitle.Location = new System.Drawing.Point(406, 26);
             this.lblInputTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblInputTitle.Name = "lblInputTitle";
-            this.lblInputTitle.Size = new System.Drawing.Size(292, 43);
+            this.lblInputTitle.Size = new System.Drawing.Size(278, 37);
             this.lblInputTitle.TabIndex = 88;
             this.lblInputTitle.Text = "Input Parameters";
             this.lblInputTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -451,12 +446,12 @@
             // lblWeightedDistribution
             // 
             this.lblWeightedDistribution.AutoSize = true;
-            this.lblWeightedDistribution.Font = new System.Drawing.Font("Open Sans", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblWeightedDistribution.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblWeightedDistribution.ForeColor = System.Drawing.Color.White;
             this.lblWeightedDistribution.Location = new System.Drawing.Point(147, 140);
             this.lblWeightedDistribution.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblWeightedDistribution.Name = "lblWeightedDistribution";
-            this.lblWeightedDistribution.Size = new System.Drawing.Size(269, 28);
+            this.lblWeightedDistribution.Size = new System.Drawing.Size(265, 25);
             this.lblWeightedDistribution.TabIndex = 87;
             this.lblWeightedDistribution.Text = "Weighted Distribution Size";
             this.lblWeightedDistribution.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -474,12 +469,12 @@
             // lblOutputTitle
             // 
             this.lblOutputTitle.AutoSize = true;
-            this.lblOutputTitle.Font = new System.Drawing.Font("Open Sans Semibold", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOutputTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblOutputTitle.ForeColor = System.Drawing.Color.White;
             this.lblOutputTitle.Location = new System.Drawing.Point(473, 26);
             this.lblOutputTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOutputTitle.Name = "lblOutputTitle";
-            this.lblOutputTitle.Size = new System.Drawing.Size(130, 43);
+            this.lblOutputTitle.Size = new System.Drawing.Size(120, 37);
             this.lblOutputTitle.TabIndex = 89;
             this.lblOutputTitle.Text = "Output";
             this.lblOutputTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -534,13 +529,13 @@
         private System.Windows.Forms.Label lblWeightedDistribution;
         private System.Windows.Forms.Label lblEpochs;
         private System.Windows.Forms.Label lblActivationFunction;
-        private System.Windows.Forms.Label lblBatchSize;
+        private System.Windows.Forms.Label lblPriority;
         private System.Windows.Forms.Label lblXavierInitialization;
         private System.Windows.Forms.Label lblHiddenLayers;
         private System.Windows.Forms.ComboBox cmbXavierInitialization;
         private System.Windows.Forms.TextBox txtWeightedDistribution;
         private System.Windows.Forms.ComboBox cmbActivationFunction;
-        private System.Windows.Forms.ComboBox cmbBatchSize;
+        private System.Windows.Forms.ComboBox cmbPriority;
         private System.Windows.Forms.TextBox txtHiddenLayers;
         private System.Windows.Forms.TextBox txtEpochs;
         private System.Windows.Forms.Panel pnlOutput;
