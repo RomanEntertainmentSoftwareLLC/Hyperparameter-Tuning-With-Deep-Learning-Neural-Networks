@@ -53,6 +53,10 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
 
         private string[] inputInformation = new string[7];
 
+        
+        //need to find a way to pass the variables input here into the python function and display that output
+        //do this as soon as possible!!!!!! Martin is bad at C#!!!!
+        
         public frmMain()
         {
             InitializeComponent();
