@@ -16,8 +16,6 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
-                beep_voice?.Dispose();
-                nanoblade_voice?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -58,6 +56,10 @@
             this.lblInputTitle = new System.Windows.Forms.Label();
             this.lblWeightedDistribution = new System.Windows.Forms.Label();
             this.pnlOutput = new System.Windows.Forms.Panel();
+            this.lblResults = new System.Windows.Forms.Label();
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.lblPercentComplete = new System.Windows.Forms.Label();
+            this.picPercentComplete = new System.Windows.Forms.PictureBox();
             this.lblOutputTitle = new System.Windows.Forms.Label();
             this.pnlWindowBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picExit)).BeginInit();
@@ -68,6 +70,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picTrain)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picClear)).BeginInit();
             this.pnlOutput.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picPercentComplete)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlWindowBar
@@ -234,10 +237,10 @@
             this.pnlInput.Name = "pnlInput";
             this.pnlInput.Size = new System.Drawing.Size(1103, 614);
             this.pnlInput.TabIndex = 86;
-            this.pnlInput.Visible = false;
             // 
             // picTrain
             // 
+            this.picTrain.Enabled = false;
             this.picTrain.Image = global::Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks.Properties.Resources.Train_Button;
             this.picTrain.Location = new System.Drawing.Point(585, 384);
             this.picTrain.Name = "picTrain";
@@ -252,6 +255,7 @@
             // 
             // picClear
             // 
+            this.picClear.Enabled = false;
             this.picClear.Image = global::Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks.Properties.Resources.Clear_Button;
             this.picClear.Location = new System.Drawing.Point(309, 384);
             this.picClear.Name = "picClear";
@@ -278,6 +282,7 @@
             // 
             this.cmbActivationFunction.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.cmbActivationFunction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbActivationFunction.Enabled = false;
             this.cmbActivationFunction.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbActivationFunction.ForeColor = System.Drawing.Color.White;
             this.cmbActivationFunction.FormattingEnabled = true;
@@ -295,6 +300,7 @@
             // 
             this.cmbPriority.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.cmbPriority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPriority.Enabled = false;
             this.cmbPriority.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbPriority.ForeColor = System.Drawing.Color.White;
             this.cmbPriority.FormattingEnabled = true;
@@ -310,6 +316,7 @@
             // txtHiddenLayers
             // 
             this.txtHiddenLayers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.txtHiddenLayers.Enabled = false;
             this.txtHiddenLayers.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHiddenLayers.ForeColor = System.Drawing.Color.White;
             this.txtHiddenLayers.Location = new System.Drawing.Point(436, 218);
@@ -324,6 +331,7 @@
             // txtEpochs
             // 
             this.txtEpochs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.txtEpochs.Enabled = false;
             this.txtEpochs.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtEpochs.ForeColor = System.Drawing.Color.White;
             this.txtEpochs.Location = new System.Drawing.Point(436, 176);
@@ -338,6 +346,7 @@
             // txtWeightedDistribution
             // 
             this.txtWeightedDistribution.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.txtWeightedDistribution.Enabled = false;
             this.txtWeightedDistribution.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtWeightedDistribution.ForeColor = System.Drawing.Color.White;
             this.txtWeightedDistribution.Location = new System.Drawing.Point(436, 134);
@@ -353,6 +362,7 @@
             // 
             this.cmbXavierInitialization.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.cmbXavierInitialization.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbXavierInitialization.Enabled = false;
             this.cmbXavierInitialization.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbXavierInitialization.ForeColor = System.Drawing.Color.White;
             this.cmbXavierInitialization.FormattingEnabled = true;
@@ -459,12 +469,95 @@
             // pnlOutput
             // 
             this.pnlOutput.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.pnlOutput.Controls.Add(this.lblResults);
+            this.pnlOutput.Controls.Add(this.listBox1);
+            this.pnlOutput.Controls.Add(this.lblPercentComplete);
+            this.pnlOutput.Controls.Add(this.picPercentComplete);
             this.pnlOutput.Controls.Add(this.lblOutputTitle);
             this.pnlOutput.Location = new System.Drawing.Point(156, 64);
             this.pnlOutput.Name = "pnlOutput";
             this.pnlOutput.Size = new System.Drawing.Size(1103, 614);
             this.pnlOutput.TabIndex = 87;
             this.pnlOutput.Visible = false;
+            // 
+            // lblResults
+            // 
+            this.lblResults.AutoSize = true;
+            this.lblResults.BackColor = System.Drawing.Color.Transparent;
+            this.lblResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblResults.ForeColor = System.Drawing.Color.White;
+            this.lblResults.Location = new System.Drawing.Point(495, 225);
+            this.lblResults.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblResults.Name = "lblResults";
+            this.lblResults.Size = new System.Drawing.Size(70, 20);
+            this.lblResults.TabIndex = 93;
+            this.lblResults.Text = "Results";
+            this.lblResults.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // listBox1
+            // 
+            this.listBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.listBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBox1.ForeColor = System.Drawing.Color.White;
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.HorizontalScrollbar = true;
+            this.listBox1.ItemHeight = 20;
+            this.listBox1.Items.AddRange(new object[] {
+            "Epoch 993/1000",
+            "1/1 [==============================] - 0s 289ms/step - loss: 0.0916 - accuracy: 0" +
+                ".9724 - val_loss: 0.0841 - val_accuracy: 0.9749",
+            "Epoch 994/1000",
+            "1/1 [==============================] - 0s 290ms/step - loss: 0.0908 - accuracy: 0" +
+                ".9721 - val_loss: 0.0840 - val_accuracy: 0.9750",
+            "Epoch 995/1000",
+            "1/1 [==============================] - 0s 290ms/step - loss: 0.0890 - accuracy: 0" +
+                ".9725 - val_loss: 0.0840 - val_accuracy: 0.9750",
+            "Epoch 996/1000",
+            "1/1 [==============================] - 0s 286ms/step - loss: 0.0901 - accuracy: 0" +
+                ".9719 - val_loss: 0.0839 - val_accuracy: 0.9750",
+            "Epoch 997/1000",
+            "1/1 [==============================] - 0s 288ms/step - loss: 0.0882 - accuracy: 0" +
+                ".9736 - val_loss: 0.0838 - val_accuracy: 0.9749",
+            "Epoch 998/1000",
+            "1/1 [==============================] - 0s 288ms/step - loss: 0.0891 - accuracy: 0" +
+                ".9728 - val_loss: 0.0836 - val_accuracy: 0.9751",
+            "Epoch 999/1000",
+            "1/1 [==============================] - 0s 291ms/step - loss: 0.0886 - accuracy: 0" +
+                ".9737 - val_loss: 0.0835 - val_accuracy: 0.9750",
+            "Epoch 1000/1000",
+            "1/1 [==============================] - 0s 288ms/step - loss: 0.0908 - accuracy: 0" +
+                ".9723 - val_loss: 0.0835 - val_accuracy: 0.9749",
+            "Test loss:  0.08349700272083282",
+            "Test accuracy:  0.9749000072479248"});
+            this.listBox1.Location = new System.Drawing.Point(141, 258);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(793, 320);
+            this.listBox1.TabIndex = 92;
+            // 
+            // lblPercentComplete
+            // 
+            this.lblPercentComplete.AutoSize = true;
+            this.lblPercentComplete.BackColor = System.Drawing.Color.Transparent;
+            this.lblPercentComplete.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPercentComplete.ForeColor = System.Drawing.Color.White;
+            this.lblPercentComplete.Location = new System.Drawing.Point(420, 134);
+            this.lblPercentComplete.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblPercentComplete.Name = "lblPercentComplete";
+            this.lblPercentComplete.Size = new System.Drawing.Size(222, 20);
+            this.lblPercentComplete.TabIndex = 91;
+            this.lblPercentComplete.Text = "Percent Complete: 100.0%";
+            this.lblPercentComplete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // picPercentComplete
+            // 
+            this.picPercentComplete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(164)))), ((int)(((byte)(164)))));
+            this.picPercentComplete.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.picPercentComplete.Location = new System.Drawing.Point(141, 102);
+            this.picPercentComplete.Name = "picPercentComplete";
+            this.picPercentComplete.Size = new System.Drawing.Size(793, 26);
+            this.picPercentComplete.TabIndex = 90;
+            this.picPercentComplete.TabStop = false;
             // 
             // lblOutputTitle
             // 
@@ -485,15 +578,16 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.ClientSize = new System.Drawing.Size(1264, 681);
-            this.Controls.Add(this.pnlInput);
             this.Controls.Add(this.pnlSidePanel);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.pnlWindowBar);
+            this.Controls.Add(this.pnlInput);
             this.Controls.Add(this.pnlOutput);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hyperparameter Tuning With Deep Learning Neural Networks";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.pnlWindowBar.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picExit)).EndInit();
@@ -507,6 +601,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picClear)).EndInit();
             this.pnlOutput.ResumeLayout(false);
             this.pnlOutput.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picPercentComplete)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -543,6 +638,10 @@
         private System.Windows.Forms.Label lblInputInformation;
         private System.Windows.Forms.PictureBox picTrain;
         private System.Windows.Forms.PictureBox picClear;
+        private System.Windows.Forms.Label lblPercentComplete;
+        private System.Windows.Forms.PictureBox picPercentComplete;
+        private System.Windows.Forms.Label lblResults;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }
 

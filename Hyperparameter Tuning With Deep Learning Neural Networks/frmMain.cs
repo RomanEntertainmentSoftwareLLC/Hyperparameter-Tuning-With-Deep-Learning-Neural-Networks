@@ -1,18 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SharpDX.XAudio2;
 using SharpDX.Multimedia;
 using System.IO;
 using Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks.Properties;
 using System.Reflection;
+using System.Threading.Tasks;
+using System.Net;
+using System.Net.Sockets;
+
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Diagnostics;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Runtime.CompilerServices;
+using System.Linq.Expressions;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+using System.Text.RegularExpressions;
+using System.Diagnostics.Eventing.Reader;
+using System.Threading;
 
 namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
 {
@@ -32,35 +42,142 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
         private Color BACKCOLOR1 = Color.FromArgb(29, 29, 29);
         private Color BACKCOLOR2 = Color.FromArgb(36, 36, 36);
 
-        private bool isDragging = false;
         private Point offset;
-        private bool soundEnabled = true;
+        private bool soundEnabled;
+        private bool isDragging;
+        private bool disableControls;
         XAudio2 xaudio;
         Assembly assembly;
 
         AudioBuffer beep_buffer;
         SoundStream beep_soundstream;
-        SourceVoice beep_voice;
         WaveFormat beep_waveFormat;
 
         AudioBuffer nanoblade_buffer;
         SoundStream nanoblade_soundstream;
-        SourceVoice nanoblade_voice;
         WaveFormat nanoblade_waveFormat;
 
-        private bool inputEnabled = true;
-        private bool outputEnabled = true;
+        private bool inputEnabled;
+        private bool outputEnabled;
 
         private string[] inputInformation = new string[7];
 
-        
+        private TcpListener server = null;
+        private TcpClient client = null;
+
+        private bool clientConnected;
+        private CancellationTokenSource cts = new CancellationTokenSource();
+
+
         //need to find a way to pass the variables input here into the python function and display that output
         //do this as soon as possible!!!!!! Martin is bad at C#!!!!
-        
+
         public frmMain()
         {
             InitializeComponent();
         }
+
+        private void disableInputControls()
+        {
+            cmbXavierInitialization.Enabled = false;
+            txtWeightedDistribution.Enabled = false;
+            txtEpochs.Enabled = false;
+            txtHiddenLayers.Enabled = false;
+            cmbPriority.Enabled = false;
+            cmbActivationFunction.Enabled = false;
+            picClear.Enabled = false;
+            picTrain.Enabled = false;
+        }
+
+        private void enableInputControls()
+        {
+            cmbXavierInitialization.Enabled = true;
+            txtWeightedDistribution.Enabled = true;
+            txtEpochs.Enabled = true;
+            txtHiddenLayers.Enabled = true;
+            cmbPriority.Enabled = true;
+            cmbActivationFunction.Enabled = true;
+            picClear.Enabled = true;
+            picTrain.Enabled = true;
+        }
+
+        private async void initializeServer()
+        {
+            int port = 13000;
+            string localAddr = "127.0.0.1";
+
+            server = new TcpListener(IPAddress.Parse(localAddr), port); // Create a TcpListener.
+            server.Start(); // Start listening for client requests.
+
+            while (!cts.Token.IsCancellationRequested)
+            {
+                lblInputInformation.Text = "Controls are disabled. Waiting for a connection from Python client...";
+
+                try
+                {
+                    // Perform a blocking call to accept requests. Use Task.Run to move execution to a separate thread.
+                    using (cts.Token.Register(() => server.Stop()))
+                    {
+                        client = await server.AcceptTcpClientAsync();
+                    }
+                    clientConnected = true;
+                    enableInputControls();
+                    _ = Task.Run(() => CheckClientConnection(cts.Token), cts.Token);
+                    lblInputInformation.Text = "Connected! Controls enabled.";
+                    disableControls = false;
+
+                    while (clientConnected && !cts.Token.IsCancellationRequested)
+                    {
+                        await Task.Delay(1000);  // wait for a second
+                    }
+
+                    // Close the previous client before accepting a new one
+                    client?.Close();
+                    client = null;
+
+                    // Add a delay here to give the system time to fully close the connection
+                    await Task.Delay(1000);  // Delay for a second
+                }
+                catch (SocketException ex)
+                {
+                    server?.Stop();
+                    return;
+                }
+                catch (OperationCanceledException)
+                {
+                    // Operation was cancelled, break the loop
+                    break;
+                }
+            }
+        }
+
+        private void CheckClientConnection(CancellationToken cancellationToken)
+        {
+            while (clientConnected && !cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    if (client.Client.Poll(0, SelectMode.SelectRead))
+                    {
+                        byte[] checkData = new byte[1];
+                        if (client.Client.Receive(checkData, SocketFlags.Peek) == 0)
+                        {
+                            clientConnected = false;
+                            disableInputControls();
+                            lblInputInformation.Text = "Python client app disconnected from the server.";
+                        }
+                    }
+                }
+                catch
+                {
+                    clientConnected = false;
+                    disableInputControls();
+                    lblInputInformation.Text = "Python client app disconnected from the server.";
+                }
+                Task.Delay(1000).Wait(); // delay for a second
+            }
+        }
+
 
         private void setupInputInformation()
         {
@@ -102,7 +219,8 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
             txtHiddenLayers.Text = "4";
             cmbPriority.SelectedIndex = 0;
             cmbActivationFunction.SelectedIndex = 0;
-            lblInputInformation.Text = inputInformation[0];
+
+            if (disableControls == false) lblInputInformation.Text = inputInformation[0];
         }
 
 
@@ -136,27 +254,19 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
 
         void setupInputOutput()
         {
-            if (inputEnabled == false && outputEnabled == false)
-            {
-                inputEnabled = true;
-            }
+            pnlInput.Visible = true;
+            pnlOutput.Visible = false;
+            inputEnabled = false;
+            outputEnabled = true;
+            lblInput.ForeColor = FORECOLOR2;
+            lblOutput.ForeColor = FORECOLOR3;
+    }
 
-            if (inputEnabled == false)
-            {
-                lblInput.ForeColor = FORECOLOR2;
-            }
-
-            if (outputEnabled == false)
-            {
-                lblOutput.ForeColor = FORECOLOR2;
-            }
-        }
-
-        void playSound(SourceVoice soundVoice, WaveFormat waveFormat, AudioBuffer audioBuffer, SoundStream soundStream)
+        void playSound(WaveFormat waveFormat, AudioBuffer audioBuffer, SoundStream soundStream)
         {
             if (soundEnabled == true)
             {
-                soundVoice = new SourceVoice(xaudio, waveFormat, true);
+                SourceVoice soundVoice = new SourceVoice(xaudio, waveFormat, true);
                 soundVoice.SubmitSourceBuffer(audioBuffer, soundStream.DecodedPacketsInfo);
                 soundVoice.Start();
             }
@@ -209,7 +319,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
         private void picExit_MouseEnter(object sender, EventArgs e)
         {
             swapImage(Resources.Exit_Button_2, picExit);
-            playSound(beep_voice, beep_waveFormat, beep_buffer, beep_soundstream);
+            playSound(beep_waveFormat, beep_buffer, beep_soundstream);
         }
 
         private void picExit_MouseLeave(object sender, EventArgs e)
@@ -222,7 +332,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
             if (e.Button == MouseButtons.Left)
             {
                 swapImage(Resources.Exit_Button_2, picExit);
-                playSound(nanoblade_voice, nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
+                playSound(nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
                 Application.Exit();
             }
         }
@@ -238,7 +348,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
         private void picMinimize_MouseEnter(object sender, EventArgs e)
         {
             swapImage(Resources.Minimize_Button_2, picMinimize);
-            playSound(beep_voice, beep_waveFormat, beep_buffer, beep_soundstream);
+            playSound(beep_waveFormat, beep_buffer, beep_soundstream);
         }
 
         private void picMinimize_MouseLeave(object sender, EventArgs e)
@@ -251,7 +361,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
             if (e.Button == MouseButtons.Left)
             {
                 swapImage(Resources.Minimize_Button_2, picMinimize);
-                playSound(nanoblade_voice, nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
+                playSound(nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
                 WindowState = FormWindowState.Minimized;
             }
         }
@@ -276,7 +386,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
             if (soundEnabled == true)
             {
                 swapImage(Resources.Sound_Button_2, picSound);
-                playSound(beep_voice, beep_waveFormat, beep_buffer, beep_soundstream);
+                playSound(beep_waveFormat, beep_buffer, beep_soundstream);
             }
             else
             {
@@ -311,16 +421,22 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                     soundEnabled = true;
                 }
 
-                playSound(nanoblade_voice, nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
+                playSound(nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
             }
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            disableControls = true;
+            soundEnabled = true;
+            isDragging = false;
+            clientConnected = false;
+            disableInputControls();
             setupInputOutput();
             setupSounds();
             setupInputPanel();
             setupInputInformation();
+            initializeServer();
         }
 
         private void lblInput_MouseEnter(object sender, EventArgs e)
@@ -329,7 +445,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
             {
                 lblInput.Visible = false;
                 lblInputLarge.Visible = true;
-                playSound(beep_voice, beep_waveFormat, beep_buffer, beep_soundstream);
+                playSound(beep_waveFormat, beep_buffer, beep_soundstream);
             }
         }
 
@@ -358,7 +474,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                 lblInput.Visible = true;
                 lblInput.ForeColor = FORECOLOR2;
                 lblOutput.ForeColor = FORECOLOR3;
-                playSound(nanoblade_voice, nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
+                playSound(nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
                 pnlOutput.Visible = false;
                 pnlInput.Visible = true;
                 cmbXavierInitialization.Select();
@@ -371,7 +487,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
             {
                 lblOutput.Visible = false;
                 lblOutputLarge.Visible = true;
-                playSound(beep_voice, beep_waveFormat, beep_buffer, beep_soundstream);
+                playSound( beep_waveFormat, beep_buffer, beep_soundstream);
             }
         }
 
@@ -400,7 +516,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                 lblOutput.Visible = true;
                 lblOutput.ForeColor = FORECOLOR2;
                 lblInput.ForeColor = FORECOLOR3;
-                playSound(nanoblade_voice, nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
+                playSound(nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
                 pnlInput.Visible = false;
                 pnlOutput.Visible = true;
             }
@@ -408,32 +524,32 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
 
         private void cmbXavierInitialization_Enter(object sender, EventArgs e)
         {
-            lblInputInformation.Text = inputInformation[1];
+            if (disableControls == false) lblInputInformation.Text = inputInformation[1];
         }
 
         private void txtWeightedDistribution_Enter(object sender, EventArgs e)
         {
-            lblInputInformation.Text = inputInformation[2];
+            if (disableControls == false) lblInputInformation.Text = inputInformation[2];
         }
 
         private void txtEpochs_Enter(object sender, EventArgs e)
         {
-            lblInputInformation.Text = inputInformation[3];
+            if (disableControls == false) lblInputInformation.Text = inputInformation[3];
         }
 
         private void txtHiddenLayers_Enter(object sender, EventArgs e)
         {
-            lblInputInformation.Text = inputInformation[4];
+            if (disableControls == false) lblInputInformation.Text = inputInformation[4];
         }
 
         private void cmbBatchSize_Enter(object sender, EventArgs e)
         {
-            lblInputInformation.Text = inputInformation[5];
+            if (disableControls == false) lblInputInformation.Text = inputInformation[5];
         }
 
         private void cmbActivationFunction_Enter(object sender, EventArgs e)
         {
-            lblInputInformation.Text = inputInformation[6];
+            if (disableControls == false) lblInputInformation.Text = inputInformation[6];
         }
 
         private void txtWeightedDistribution_KeyDown(object sender, KeyEventArgs e)
@@ -565,7 +681,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
         private void picClear_MouseUp(object sender, MouseEventArgs e)
         {
             swapImage(Resources.Clear_Button_2, picClear);
-            playSound(nanoblade_voice, nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
+            playSound(nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
             setupInputPanel();
             ActiveControl = cmbXavierInitialization;
         }
@@ -582,15 +698,60 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
 
         private void picTrain_MouseDown(object sender, MouseEventArgs e)
         {
-            swapImage(Resources.Train_Button_3, picTrain);
+            if (e.Button == MouseButtons.Left)
+            {
+                swapImage(Resources.Train_Button_3, picTrain);
+            }
         }
 
         private void picTrain_MouseUp(object sender, MouseEventArgs e)
         {
-            swapImage(Resources.Train_Button_2, picTrain);
-            playSound(nanoblade_voice, nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
-            pnlInput.Visible = false;
-            pnlOutput.Visible = true;
+            if (e.Button == MouseButtons.Left)
+            {
+                swapImage(Resources.Train_Button_2, picTrain);
+                playSound(nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
+                pnlInput.Visible = false;
+                pnlOutput.Visible = true;
+                outputEnabled = false;
+                inputEnabled = true;
+                lblInput.ForeColor = FORECOLOR3;
+                lblOutput.ForeColor = FORECOLOR2;
+                //string pythonPath = @"C:\Users\psych\AppData\Local\Programs\Python\Python39\python.exe";
+                //string pythonScriptPath = Path.Combine(Directory.GetCurrentDirectory(), "python", "batchSizeTuningGoodness.py");
+
+                //ProcessStartInfo startInfo = new ProcessStartInfo
+                //{
+                //    FileName = pythonPath,
+                //    Arguments = $"\"{pythonScriptPath}\"",
+                //    UseShellExecute = false,
+                //    RedirectStandardOutput = true,
+                //    RedirectStandardError = true,
+                //};
+
+                //using (Process process = Process.Start(startInfo))
+                //{
+                //    string result = process.StandardOutput.ReadToEnd();
+                //    string error = process.StandardError.ReadToEnd();
+
+                //    if (!string.IsNullOrEmpty(result))
+                //    {
+                //        MessageBox.Show(result);
+                //    }
+
+                //    if (!string.IsNullOrEmpty(error))
+                //    {
+                //        MessageBox.Show(error);
+                //    }
+                //}
+
+            }
+        }
+
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            cts.Cancel();
+            client?.Close();
+            server?.Stop();
         }
     }
 }
