@@ -140,6 +140,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                 }
                 catch (SocketException ex)
                 {
+                    MessageBox.Show($"Socket error: {ex.Message}", "Socket Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     server?.Stop();
                     return;
                 }
