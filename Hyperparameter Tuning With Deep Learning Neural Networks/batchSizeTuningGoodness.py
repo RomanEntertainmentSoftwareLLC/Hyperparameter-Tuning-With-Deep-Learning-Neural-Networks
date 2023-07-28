@@ -5,10 +5,12 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
+from keras.callbacks import Callback
 import numpy as np
 import math
 import socket
 import errno
+import json
 
 '''
 This module will automatically choose a batch size for a keras sequential model
@@ -28,51 +30,37 @@ TODO:
     - Add further parameters such as learning rate function
 '''
 
-
-def client_program():
-    host = "127.0.0.1"
-    port = 13000  # The same port as used by the server
-
-    client_socket = socket.socket()  # instantiate
-
-    print("Establishing connection with the server...")
-
-    try:
-        client_socket.connect((host, port))  # connect to the server
-    except socket.error as e:
-        if e.errno == errno.ECONNREFUSED:
-            print("Could not connect to the server. Please ensure the server is running before running this application.")
-            return
-        print(f"Could not connect to server: {e}")
-        return
+BUFFER_SIZE = 1024  # Use a constant for the buffer size
+xavierInitialization = True
+weightedDistributionSize = 10
+epochs = 1000
+hiddenLayerSize = 4
+priority = 0
+activationFunction = "ReLU"
+client_socket = None
 
 
-    print("Connected to Server")
+class TrainingMonitor(Callback):
+    def __init__(self, clientSocket, total_epochs):
+        self.socket = clientSocket
+        self.total_epochs = total_epochs
 
-    '''while True:
-        dataToSend = input('Enter an integer: ')
-        if not dataToSend.isdigit():
-            print("Input is not an integer.")
-            continue
+    '''def on_epoch_end(self, epoch, logs=None):
+        logs = logs or {}
+        json_logs = json.dumps(str(logs), ensure_ascii=False)
+        self.socket.send((json_logs + '\n').encode('utf-8'))  # Add '\n' at the end'''
 
-        strToSend = input('Enter a string: ')
+    def on_epoch_end(self, epoch, logs=None):
+        logs = logs or {}
+        percent_complete = ((epoch+1) / self.total_epochs) * 100  # Calculate percent complete
+        logs_with_epoch = {**logs, 'epoch': f'{epoch+1}/{self.total_epochs}',
+                           'percent_complete': f"{percent_complete:.2f}"}
+        json_logs = json.dumps(logs_with_epoch, ensure_ascii=False)
+        self.socket.send((json_logs + '\n').encode('utf-8'))  # Add '\n' at the end
 
-        # Prepare data to send: an integer and a string
-        data = f"{dataToSend},{strToSend}"
 
-        try:
-            client_socket.send(data.encode())  # send message
-        except socket.error as e:
-            print(f"Could not send data: {e}")
-            break
-
-        if input('Do you want to exit? (y/n) ') == 'y':
-            break'''
-
-    client_socket.close()  # close the connection
-    print("Closed socket connection")
-
-def kerasBatchSizeTuner(epochs, accOrTime=0, inputDataSet=mnist.load_data()):
+def kerasBatchSizeTuner(xavierInit=True, weightedDist=10, epochIterations=1000, numHiddenLayers=4, accOrTime=0,
+                        activation="ReLU", inputDataSet=mnist.load_data()):
     # creating keras model input from the dataset
     (x_train, y_train), (x_test, y_test) = inputDataSet
     print('x_train shape: ', x_train.shape)
@@ -88,8 +76,18 @@ def kerasBatchSizeTuner(epochs, accOrTime=0, inputDataSet=mnist.load_data()):
 
     # adding layers to the model
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dropout(0.5))
+
+    # Define initializer based on user's choice
+    if xavierInit:
+        initializer = 'glorot_uniform'
+    else:
+        initializer = keras.initializers.RandomUniform(minval=-weightedDist, maxval=weightedDist, seed=None)
+
+    # Add hidden layers based on user's choice
+    for _ in range(numHiddenLayers):
+        model.add(Dense(128, activation=activation.lower(), kernel_initializer=initializer))
+        model.add(Dropout(0.5))
+
     model.add(Dense(num_classes, activation='softmax'))
 
     # compiling model with the categorical cross entropy loss function and the adam optimizer
@@ -103,36 +101,121 @@ def kerasBatchSizeTuner(epochs, accOrTime=0, inputDataSet=mnist.load_data()):
     x_test /= 255
 
     if accOrTime == 0:  # prioritizing time
-        batch_size = 2 ** (int(math.sqrt(
-            epochs)))  # this formula for batch size was found to be the best at training a model to 97% accuracy relatively quickly
+        batch_size = 2 ** (int(math.sqrt(epochIterations)))
     elif accOrTime == 1:  # prioritizing accuracy
-        batch_size = 32  # this batch size was found to give a more consistent higher test accuracy
+        batch_size = 32
 
-    if batch_size > x_train.shape[0]:
-        batch_size = x_train.shape[0]  # ensuring that batch size cannot be larger than the size of the dataset
-    elif batch_size <= 0:
-        batch_size = 1  # ensuring that batch size cannot be zero
-    else:  # if all else fails somehow
-        print("Invalid prioritization choice.")
-        return
-
-    # not using this
-    # earlyStop = keras.callbacks.EarlyStopping(monitor = 'accuracy', min_delta = 0.001, patience = 1, mode = 'max', baseline = desiredAccuracy)
+    if batch_size <= 0:
+        batch_size = 1
+        error_message = "Invalid prioritization choice. Batch size set to 1."
+        print(error_message)
+        error_results = {'error_results': error_message}
+        json_results = json.dumps(error_results, ensure_ascii=False)
+        client_socket.send((json_results + '\n').encode('utf-8'))
+    elif batch_size > x_train.shape[0]:
+        batch_size = x_train.shape[0]
+        error_message = "Invalid prioritization choice. Batch size set to maximum available."
+        print(error_message)
+        error_results = {'error_results': error_message}
+        json_results = json.dumps(error_results, ensure_ascii=False)
+        client_socket.send((json_results + '\n').encode('utf-8'))
 
     print("Batch Size: ", batch_size)
 
     # training model
     model.fit(x_train, y_train,
               batch_size=batch_size,
-              epochs=epochs,
+              epochs=epochIterations,
               verbose=1,
-              validation_data=(x_test, y_test))
+              validation_data=(x_test, y_test),
+              callbacks=[TrainingMonitor(client_socket, epochIterations)])
     # testing model
     score = model.evaluate(x_test, y_test, verbose=0)
+    # send test loss and accuracy to server
+    test_results = {'test_loss': score[0], 'test_accuracy': score[1]}
+    json_results = json.dumps(test_results, ensure_ascii=False)
+    client_socket.send((json_results + '\n').encode('utf-8'))
     print('Test loss: ', score[0])
     print('Test accuracy: ', score[1])
 
 
+def client_program():
+    global xavierInitialization
+    global weightedDistributionSize
+    global epochs
+    global hiddenLayerSize
+    global priority
+    global activationFunction
+    global client_socket
+    host = "127.0.0.1"
+    port = 13000  # The same port as used by the server
+
+    client_socket = socket.socket()  # instantiate
+
+    print("Establishing connection with the server...")
+
+    try:
+        client_socket.connect((host, port))  # connect to the server
+    except socket.error as e:
+        if e.errno == errno.ECONNREFUSED:
+            print("Could not connect to the server. Please ensure the server is "
+                  "running before running this application.")
+            return
+        print(f"Could not connect to server: {e}")
+        return
+
+    print("Connected to Server")
+
+    data_json = None  # initialize data_json
+    message_buffer = ""
+
+    while True:
+        try:
+            # Receive data from the server
+            data = client_socket.recv(BUFFER_SIZE)
+
+            # If there's no data, that could mean the server has disconnected
+            if not data:
+                print("Server has disconnected.")
+                break
+            else:
+                message_buffer += data.decode()
+
+                while "\n" in message_buffer:
+                    message, message_buffer = message_buffer.split("\n", 1)
+                    message = message.strip()  # remove leading/trailing spaces
+
+                    if not message.startswith("ping"):
+                        print(f"Received data: {message}")  # this will only print data that doesn't start with "ping"
+                        try:
+                            data_json = json.loads(message)
+                            xavierInitialization = data_json["xavierInitialization"]
+                            weightedDistributionSize = data_json["weightedDistributionSize"]
+                            epochs = data_json["epochs"]
+                            hiddenLayerSize = data_json["hiddenLayerSize"]
+                            priority = data_json["priority"]
+                            activationFunction = data_json["activationFunction"]
+                            print("xavierInitialization: ", xavierInitialization)
+                            print("weightedDistributionSize: ", weightedDistributionSize)
+                            print("epochs: ", epochs)
+                            print("hiddenLayerSize: ", hiddenLayerSize)
+                            if priority == 0:
+                                print("priority: Time")
+                            elif priority == 1:
+                                print("priority: Accuracy")
+                            print("activationFunction: ", activationFunction)
+                            kerasBatchSizeTuner(xavierInitialization, weightedDistributionSize, epochs,
+                                                hiddenLayerSize, priority, activationFunction)
+
+                        except json.JSONDecodeError:
+                            print(f"Received data is not valid JSON: {message}")
+        except socket.error as e:
+            print("An error occurred: ", str(e))
+            break
+        except KeyboardInterrupt:
+            print("Interrupted by user.")
+            break
+
+
 if __name__ == '__main__':
     client_program()
-    #kerasBatchSizeTuner(1000)
