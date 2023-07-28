@@ -215,9 +215,11 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                         if (client.Client.Receive(checkData, SocketFlags.Peek) == 0)
                         {
                             clientConnected = false;
+                            training = false;
                             disableInputControls();
                             lblInputInformation.Text = "Python client app disconnected from the server.";
                             lstResults.Items.Add("Python client app disconnected from the server.");
+                            StopTimer();
                         }
                     }
                 }
@@ -228,6 +230,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                     disableInputControls();
                     lblInputInformation.Text = "Python client app disconnected from the server.";
                     lstResults.Items.Add("Python client app disconnected from the server.");
+                    StopTimer();
                 }
                 Task.Delay(1000).Wait(); // delay for a second
             }
@@ -262,6 +265,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                     disableInputControls();
                     lblInputInformation.Text = $"Error sending data to client: {ex.Message}";
                     lstResults.Items.Add($"Error sending data to client: {ex.Message}");
+                    StopTimer();
                 }
 
                 // Delay for some time
@@ -297,6 +301,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                     disableInputControls();
                     lblInputInformation.Text = "Python client app disconnected from the server.";
                     lstResults.Items.Add("Python client app disconnected from the server.");
+                    StopTimer();
                 }
                 await Task.Delay(1000); // delay for a second
             }
@@ -424,6 +429,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                 disableInputControls();
                 lstResults.Invoke((Action)(() => lstResults.Items.Add($"Python client app disconnected from the server: {ex.Message}")));
                 lblInputInformation.Invoke((Action)(() => lblInputInformation.Text = $"Python client app disconnected from the server: {ex.Message}"));
+                StopTimer();
             }
         }
 
