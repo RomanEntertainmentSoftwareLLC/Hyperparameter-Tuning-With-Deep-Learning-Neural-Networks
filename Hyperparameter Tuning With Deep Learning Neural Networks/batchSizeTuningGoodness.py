@@ -101,7 +101,9 @@ def kerasBatchSizeTuner(xavierInit=True, weightedDist=10, epochIterations=1000, 
     x_test /= 255
 
     if accOrTime == 0:  # prioritizing time
-        batch_size = 2 ** (int(math.sqrt(epochIterations)))
+        # Do not use. It is approximately 3,306,772,394 if using 1000 epochs. This makes no sense.
+        # batch_size = 2 ** (int(math.sqrt(epochIterations)))
+        batch_size = max(int(x_train.shape[0] * 0.1), 1)  # 10% of training data for time purposes.
     elif accOrTime == 1:  # prioritizing accuracy
         batch_size = 32
 
