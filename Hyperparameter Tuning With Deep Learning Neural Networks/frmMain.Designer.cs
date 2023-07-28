@@ -57,10 +57,10 @@
             this.lblWeightedDistribution = new System.Windows.Forms.Label();
             this.pnlOutput = new System.Windows.Forms.Panel();
             this.lblResults = new System.Windows.Forms.Label();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.lblPercentComplete = new System.Windows.Forms.Label();
+            this.lstResults = new System.Windows.Forms.ListBox();
             this.picPercentComplete = new System.Windows.Forms.PictureBox();
             this.lblOutputTitle = new System.Windows.Forms.Label();
+            this.lblTime = new System.Windows.Forms.Label();
             this.pnlWindowBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picExit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picMinimize)).BeginInit();
@@ -289,7 +289,7 @@
             this.cmbActivationFunction.Items.AddRange(new object[] {
             "Sigmoid",
             "Tanh",
-            "Relu"});
+            "ReLU"});
             this.cmbActivationFunction.Location = new System.Drawing.Point(436, 297);
             this.cmbActivationFunction.Name = "cmbActivationFunction";
             this.cmbActivationFunction.Size = new System.Drawing.Size(260, 33);
@@ -470,8 +470,8 @@
             // 
             this.pnlOutput.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.pnlOutput.Controls.Add(this.lblResults);
-            this.pnlOutput.Controls.Add(this.listBox1);
-            this.pnlOutput.Controls.Add(this.lblPercentComplete);
+            this.pnlOutput.Controls.Add(this.lstResults);
+            this.pnlOutput.Controls.Add(this.lblTime);
             this.pnlOutput.Controls.Add(this.picPercentComplete);
             this.pnlOutput.Controls.Add(this.lblOutputTitle);
             this.pnlOutput.Location = new System.Drawing.Point(156, 64);
@@ -494,65 +494,25 @@
             this.lblResults.Text = "Results";
             this.lblResults.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // listBox1
+            // lstResults
             // 
-            this.listBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
-            this.listBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox1.ForeColor = System.Drawing.Color.White;
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.HorizontalScrollbar = true;
-            this.listBox1.ItemHeight = 20;
-            this.listBox1.Items.AddRange(new object[] {
-            "Epoch 993/1000",
-            "1/1 [==============================] - 0s 289ms/step - loss: 0.0916 - accuracy: 0" +
-                ".9724 - val_loss: 0.0841 - val_accuracy: 0.9749",
-            "Epoch 994/1000",
-            "1/1 [==============================] - 0s 290ms/step - loss: 0.0908 - accuracy: 0" +
-                ".9721 - val_loss: 0.0840 - val_accuracy: 0.9750",
-            "Epoch 995/1000",
-            "1/1 [==============================] - 0s 290ms/step - loss: 0.0890 - accuracy: 0" +
-                ".9725 - val_loss: 0.0840 - val_accuracy: 0.9750",
-            "Epoch 996/1000",
-            "1/1 [==============================] - 0s 286ms/step - loss: 0.0901 - accuracy: 0" +
-                ".9719 - val_loss: 0.0839 - val_accuracy: 0.9750",
-            "Epoch 997/1000",
-            "1/1 [==============================] - 0s 288ms/step - loss: 0.0882 - accuracy: 0" +
-                ".9736 - val_loss: 0.0838 - val_accuracy: 0.9749",
-            "Epoch 998/1000",
-            "1/1 [==============================] - 0s 288ms/step - loss: 0.0891 - accuracy: 0" +
-                ".9728 - val_loss: 0.0836 - val_accuracy: 0.9751",
-            "Epoch 999/1000",
-            "1/1 [==============================] - 0s 291ms/step - loss: 0.0886 - accuracy: 0" +
-                ".9737 - val_loss: 0.0835 - val_accuracy: 0.9750",
-            "Epoch 1000/1000",
-            "1/1 [==============================] - 0s 288ms/step - loss: 0.0908 - accuracy: 0" +
-                ".9723 - val_loss: 0.0835 - val_accuracy: 0.9749",
-            "Test loss:  0.08349700272083282",
-            "Test accuracy:  0.9749000072479248"});
-            this.listBox1.Location = new System.Drawing.Point(141, 258);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(793, 320);
-            this.listBox1.TabIndex = 92;
-            // 
-            // lblPercentComplete
-            // 
-            this.lblPercentComplete.AutoSize = true;
-            this.lblPercentComplete.BackColor = System.Drawing.Color.Transparent;
-            this.lblPercentComplete.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPercentComplete.ForeColor = System.Drawing.Color.White;
-            this.lblPercentComplete.Location = new System.Drawing.Point(420, 134);
-            this.lblPercentComplete.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblPercentComplete.Name = "lblPercentComplete";
-            this.lblPercentComplete.Size = new System.Drawing.Size(222, 20);
-            this.lblPercentComplete.TabIndex = 91;
-            this.lblPercentComplete.Text = "Percent Complete: 100.0%";
-            this.lblPercentComplete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lstResults.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.lstResults.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstResults.ForeColor = System.Drawing.Color.White;
+            this.lstResults.FormattingEnabled = true;
+            this.lstResults.HorizontalScrollbar = true;
+            this.lstResults.ItemHeight = 20;
+            this.lstResults.Items.AddRange(new object[] {
+            "No training has taken place yet."});
+            this.lstResults.Location = new System.Drawing.Point(141, 258);
+            this.lstResults.Name = "lstResults";
+            this.lstResults.Size = new System.Drawing.Size(793, 320);
+            this.lstResults.TabIndex = 92;
             // 
             // picPercentComplete
             // 
-            this.picPercentComplete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(164)))), ((int)(((byte)(164)))));
-            this.picPercentComplete.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.picPercentComplete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.picPercentComplete.Location = new System.Drawing.Point(141, 102);
             this.picPercentComplete.Name = "picPercentComplete";
             this.picPercentComplete.Size = new System.Drawing.Size(793, 26);
@@ -571,6 +531,20 @@
             this.lblOutputTitle.TabIndex = 89;
             this.lblOutputTitle.Text = "Output";
             this.lblOutputTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblTime
+            // 
+            this.lblTime.AutoSize = true;
+            this.lblTime.BackColor = System.Drawing.Color.Transparent;
+            this.lblTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTime.ForeColor = System.Drawing.Color.White;
+            this.lblTime.Location = new System.Drawing.Point(486, 140);
+            this.lblTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTime.Name = "lblTime";
+            this.lblTime.Size = new System.Drawing.Size(92, 20);
+            this.lblTime.TabIndex = 91;
+            this.lblTime.Text = "Time: 0:00";
+            this.lblTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // frmMain
             // 
@@ -638,10 +612,10 @@
         private System.Windows.Forms.Label lblInputInformation;
         private System.Windows.Forms.PictureBox picTrain;
         private System.Windows.Forms.PictureBox picClear;
-        private System.Windows.Forms.Label lblPercentComplete;
         private System.Windows.Forms.PictureBox picPercentComplete;
         private System.Windows.Forms.Label lblResults;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox lstResults;
+        private System.Windows.Forms.Label lblTime;
     }
 }
 

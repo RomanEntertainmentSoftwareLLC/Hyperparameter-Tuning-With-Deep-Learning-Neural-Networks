@@ -9,20 +9,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
-
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Runtime.CompilerServices;
-using System.Linq.Expressions;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
-using System.Text.RegularExpressions;
-using System.Diagnostics.Eventing.Reader;
 using System.Threading;
+using Newtonsoft.Json;
+using System.Text;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
 {
@@ -30,7 +21,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
     {
         private const int MIN_WEIGHTED_DISTRIBUTION = 1;
         private const int MIN_EPOCHS = 1;
-        private const int MIN_HIDDEN_LAYERS = 2;
+        private const int MIN_HIDDEN_LAYERS = 1;
 
         private const int MAX_WEIGHTED_DISTRIBUTION = 100;
         private const int MAX_EPOCHS = 999999999;
@@ -68,13 +59,72 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
         private bool clientConnected;
         private CancellationTokenSource cts = new CancellationTokenSource();
 
+        private DateTime startTime;
+        private DateTime pauseTime;
+        private TimeSpan pauseSpan = TimeSpan.Zero;
+        private System.Windows.Forms.Timer timer;
 
-        //need to find a way to pass the variables input here into the python function and display that output
-        //do this as soon as possible!!!!!! Martin is bad at C#!!!!
+        private bool training;
 
         public frmMain()
         {
             InitializeComponent();
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval = 1000; // 1 second
+            timer.Tick += new EventHandler(Timer_Tick);
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            TimeSpan elapsed = DateTime.Now - startTime - pauseSpan;
+            lblTime.Text = "Time: " + elapsed.ToString(@"hh\:mm\:ss");
+        }
+
+        private string getTime()
+        {
+            TimeSpan elapsed = DateTime.Now - startTime - pauseSpan;
+            return "Time: " + elapsed.ToString(@"hh\:mm\:ss");
+        }
+
+
+        private void StartTimer()
+        {
+            if (timer.Enabled)
+                return; // Timer already running, ignore this request
+
+            if (pauseTime != default(DateTime)) // If there was a pause, calculate the time spent on pause
+            {
+                pauseSpan += DateTime.Now - pauseTime;
+                pauseTime = default(DateTime); // Reset pause time
+            }
+            else
+            {
+                startTime = DateTime.Now;
+            }
+
+            timer.Start();
+        }
+
+        private void StopTimer()
+        {
+            timer.Stop();
+        }
+
+        private void PauseTimer()
+        {
+            if (!timer.Enabled)
+                return; // Timer isn't running, ignore this request
+
+            timer.Stop();
+            pauseTime = DateTime.Now; // Register the time when pause was pressed
+        }
+
+        private void ResetTimer()
+        {
+            timer.Stop();
+            pauseSpan = TimeSpan.Zero;
+            pauseTime = default(DateTime);
+            lblTime.Text = "Time: " + "00:00:00";
         }
 
         private void disableInputControls()
@@ -123,6 +173,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                     clientConnected = true;
                     enableInputControls();
                     _ = Task.Run(() => CheckClientConnection(cts.Token), cts.Token);
+                    _ = Task.Run(() => SendDataToClient(cts.Token), cts.Token);
                     lblInputInformation.Text = "Connected! Controls enabled.";
                     disableControls = false;
 
@@ -166,16 +217,213 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                             clientConnected = false;
                             disableInputControls();
                             lblInputInformation.Text = "Python client app disconnected from the server.";
+                            lstResults.Items.Add("Python client app disconnected from the server.");
                         }
                     }
                 }
                 catch
                 {
                     clientConnected = false;
+                    training = false;
                     disableInputControls();
                     lblInputInformation.Text = "Python client app disconnected from the server.";
+                    lstResults.Items.Add("Python client app disconnected from the server.");
                 }
                 Task.Delay(1000).Wait(); // delay for a second
+            }
+        }
+
+        private void SendDataToClient(CancellationToken cancellationToken)
+        {
+            // Keep a separate buffer to send data
+            byte[] buffer = Encoding.ASCII.GetBytes("ping\n");
+
+            while (clientConnected && !cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    // Check if client is connected before sending data
+                    if (client.Connected)
+                    {
+                        // Get the stream to send data
+                        NetworkStream stream = client.GetStream();
+
+                        if (stream.CanWrite)
+                        {
+                            stream.Write(buffer, 0, buffer.Length);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle any exceptions here
+                    clientConnected = false;
+                    training = false;
+                    disableInputControls();
+                    lblInputInformation.Text = $"Error sending data to client: {ex.Message}";
+                    lstResults.Items.Add($"Error sending data to client: {ex.Message}");
+                }
+
+                // Delay for some time
+                Task.Delay(1000).Wait(); // delay for a second
+            }
+        }
+
+        public async Task sendData(CancellationToken cancellationToken)
+        {
+            if (clientConnected && !cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var data = new
+                    {
+                        xavierInitialization = Convert.ToBoolean(cmbXavierInitialization.SelectedItem.ToString()),
+                        weightedDistributionSize = Convert.ToInt32(txtWeightedDistribution.Text),
+                        epochs = Convert.ToInt32(txtEpochs.Text),
+                        hiddenLayerSize = Convert.ToInt32(txtHiddenLayers.Text),
+                        priority = Convert.ToInt32(cmbPriority.SelectedIndex),
+                        activationFunction = cmbActivationFunction.SelectedItem.ToString()
+                    };
+
+                    var jsonString = JsonConvert.SerializeObject(data) + "\n"; // append an extra newline
+                    var buffer = Encoding.ASCII.GetBytes(jsonString);
+
+                    await client.GetStream().WriteAsync(buffer, 0, buffer.Length);
+                }
+                catch
+                {
+                    clientConnected = false;
+                    training = false;
+                    disableInputControls();
+                    lblInputInformation.Text = "Python client app disconnected from the server.";
+                    lstResults.Items.Add("Python client app disconnected from the server.");
+                }
+                await Task.Delay(1000); // delay for a second
+            }
+        }
+
+        public void updateProgressBar(PictureBox picBox, float percentComplete)
+        {
+            // Create a new bitmap
+            if (picBox.Image == null)
+            {
+                picBox.Image = new Bitmap(picBox.Width, picBox.Height);
+            }
+
+            using (Graphics g = Graphics.FromImage(picBox.Image))
+            {
+                // Clear the picturebox
+                g.Clear(picBox.BackColor);
+
+                // Draw the progress bar
+                using (Brush b = new SolidBrush(Color.FromArgb(0, 164, 164)))
+                {
+                    float width = percentComplete / 100.0f * picBox.Width;
+                    g.FillRectangle(b, new RectangleF(0, 0, width, picBox.Height));
+                }
+
+                // Draw the progress text
+                using (Brush b = new SolidBrush(Color.White))
+                {
+                    string text = $"Percent Complete: {percentComplete:0.00}%";
+                    SizeF textSize = g.MeasureString(text, picBox.Font);
+                    PointF locationToDraw = new PointF();
+                    locationToDraw.X = (picBox.Width / 2) - (textSize.Width / 2);
+                    locationToDraw.Y = (picBox.Height / 2) - (textSize.Height / 2);
+
+                    g.DrawString(text, picBox.Font, b, locationToDraw);
+                }
+            }
+
+            // Redraw the PictureBox
+            picBox.Invalidate();
+        }
+
+        public async Task receiveData(CancellationToken cancellationToken)
+        {
+            try
+            {
+                using (var reader = new StreamReader(client.GetStream()))
+                {
+                    while (!cancellationToken.IsCancellationRequested)
+                    {
+                        string line = await reader.ReadLineAsync();
+                        if (line != null)
+                        {
+                            var jsonData = JsonConvert.DeserializeObject<Dictionary<string, string>>(line);
+                            if (jsonData != null && jsonData.ContainsKey("percent_complete"))
+                            {
+                                float percentComplete = Convert.ToSingle(jsonData["percent_complete"]);
+                                updateProgressBar(picPercentComplete, percentComplete);
+                                lstResults.Invoke((Action)(() => lstResults.TopIndex = lstResults.Items.Count - 1));
+                                jsonData.Remove("percent_complete");
+                            }
+
+                            if (jsonData.ContainsKey("epoch"))
+                            {
+                                // Do whatever you want with jsonData["epoch"]
+                                lstResults.Invoke((Action)(() => lstResults.Items.Add("Epoch " + jsonData["epoch"])));
+                                lstResults.Invoke((Action)(() => lstResults.TopIndex = lstResults.Items.Count - 1));
+                                jsonData.Remove("epoch");
+                            }
+
+                            if (jsonData.ContainsKey("test_loss"))
+                            {
+                                lstResults.Invoke((Action)(() => lstResults.Items.Add("Test loss: " + jsonData["test_loss"])));
+                                lstResults.Invoke((Action)(() => lstResults.TopIndex = lstResults.Items.Count - 1));
+                                jsonData.Remove("test_loss");
+                            }
+
+                            if (jsonData.ContainsKey("test_accuracy"))
+                            {
+                                lstResults.Invoke((Action)(() => lstResults.Items.Add("Test Accuracy: " + jsonData["test_accuracy"])));
+                                lstResults.Invoke((Action)(() => lstResults.TopIndex = lstResults.Items.Count - 1));
+                                jsonData.Remove("test_accuracy");
+                                enableInputControls();
+                                StopTimer();
+                                lstResults.Invoke((Action)(() => lstResults.Items.Add("Time elapsed: " + getTime())));
+                                lblInputInformation.Invoke((Action)(() => lblInputInformation.Text = "Connected! Controls enabled."));
+                            }
+
+                            if (jsonData.ContainsKey("error_results"))
+                            {
+                                lstResults.Invoke((Action)(() => lstResults.Items.Add("Error: " + jsonData["error_results"])));
+                                lstResults.Invoke((Action)(() => lstResults.TopIndex = lstResults.Items.Count - 1));
+                                jsonData.Remove("error_results");
+                                enableInputControls();
+                                StopTimer();
+                                lstResults.Invoke((Action)(() => lstResults.Items.Add("Time elapsed: " + getTime())));
+                                lblInputInformation.Invoke((Action)(() => lblInputInformation.Text = "Connected! Controls enabled."));
+                                training = false;
+                            }
+
+                            lstResults.Invoke((Action)(() => lstResults.Items.Add(string.Join(", ", jsonData.Select(kvp => {
+                                double number;
+                                if (double.TryParse(kvp.Value.ToString(), out number))
+                                {
+                                    return $"{kvp.Key}: {number:0.0000}";
+                                }
+                                else
+                                {
+                                    return $"{kvp.Key}: {kvp.Value}";
+                                }
+                            })))));
+                            lstResults.Invoke((Action)(() => lstResults.TopIndex = lstResults.Items.Count - 1));
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                clientConnected = false;
+                training = false;
+                disableInputControls();
+                lstResults.Invoke((Action)(() => lstResults.Items.Add($"Python client app disconnected from the server: {ex.Message}")));
+                lblInputInformation.Invoke((Action)(() => lblInputInformation.Text = $"Python client app disconnected from the server: {ex.Message}"));
             }
         }
 
@@ -432,6 +680,7 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
             soundEnabled = true;
             isDragging = false;
             clientConnected = false;
+            training = false;
             disableInputControls();
             setupInputOutput();
             setupSounds();
@@ -478,7 +727,10 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
                 playSound(nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
                 pnlOutput.Visible = false;
                 pnlInput.Visible = true;
-                cmbXavierInitialization.Select();
+                if (training == true)
+                    lblInputInformation.Text = "Controls temporarily disabled. Training in progress.";
+                else
+                    cmbXavierInitialization.Select();
             }
         }
 
@@ -711,40 +963,21 @@ namespace Hyperparameter_Tuning_With_Deep_Learning_Neural_Networks
             {
                 swapImage(Resources.Train_Button_2, picTrain);
                 playSound(nanoblade_waveFormat, nanoblade_buffer, nanoblade_soundstream);
+                disableInputControls();
+                lblInputInformation.Text = "Controls temporarily disabled. Training in progress.";
                 pnlInput.Visible = false;
                 pnlOutput.Visible = true;
                 outputEnabled = false;
                 inputEnabled = true;
+                training = true;
                 lblInput.ForeColor = FORECOLOR3;
                 lblOutput.ForeColor = FORECOLOR2;
-                //string pythonPath = @"C:\Users\psych\AppData\Local\Programs\Python\Python39\python.exe";
-                //string pythonScriptPath = Path.Combine(Directory.GetCurrentDirectory(), "python", "batchSizeTuningGoodness.py");
-
-                //ProcessStartInfo startInfo = new ProcessStartInfo
-                //{
-                //    FileName = pythonPath,
-                //    Arguments = $"\"{pythonScriptPath}\"",
-                //    UseShellExecute = false,
-                //    RedirectStandardOutput = true,
-                //    RedirectStandardError = true,
-                //};
-
-                //using (Process process = Process.Start(startInfo))
-                //{
-                //    string result = process.StandardOutput.ReadToEnd();
-                //    string error = process.StandardError.ReadToEnd();
-
-                //    if (!string.IsNullOrEmpty(result))
-                //    {
-                //        MessageBox.Show(result);
-                //    }
-
-                //    if (!string.IsNullOrEmpty(error))
-                //    {
-                //        MessageBox.Show(error);
-                //    }
-                //}
-
+                ResetTimer();
+                StartTimer();
+                lstResults.Items.Clear();
+                lstResults.Items.Add("Training...");
+                _ = Task.Run(() => sendData(cts.Token), cts.Token);
+                _ = Task.Run(() => receiveData(cts.Token), cts.Token);
             }
         }
 
